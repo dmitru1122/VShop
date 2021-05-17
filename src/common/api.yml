@@ -1,0 +1,400 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: sc-scr-webserver
+  description: The backend for VShop
+basePath: /api/v1
+tags:
+  - name: Specification
+    description: The swagger API specification
+  - name: Forms
+    description: Sending forms to SF org
+
+consumes:
+  - application/json
+produces:
+  - application/json
+
+
+definitions:
+  FormBody:
+    type: object
+    title: Form without resume
+    required:
+      - first_name
+      - last_name
+      - email
+      - phone
+      - additional_information
+      - position
+      - city
+      - school_name
+      - speciality
+      - graduation_year
+      - english_level
+    properties:
+      first_name:
+        type: string
+        example: firstName
+      last_name:
+        type: string
+        example: lastName
+      email:
+        type: string
+        example: email@email.email
+      phone:
+        type: string
+        example: '+375292222222'
+      additional_information:
+        type: string
+        example: additionalInformation
+      position:
+        type: string
+        example: vacancyName
+      city:
+        type: string
+        example: "Brest"
+      school_name:
+        type: string
+        example: schoolName
+      speciality:
+        type: string
+        example: speciality
+      graduation_year:
+        type: string
+        example: graduationYear
+      english_level:
+        type: string
+        example: "A1"
+      file_name:
+        type: string
+        example: MyResume.pdf
+      file:
+        type: string
+        example: Contents of the file.
+  EmailBody:
+    type: object
+    title: Data to send Email
+    required:
+      - html
+      - subject
+    properties:
+      html:
+        type: string
+        example: html
+      subject:
+        type: string
+        example: subject
+  JeansBody:
+    type: object
+    title: Vacancy
+    required:
+      - size
+    properties:
+      size:
+        type: string
+        example: Brest
+      # title: Jeans
+      # required:
+      #   - typeee
+      #   - color
+      #   - price
+      #   - size
+      #   - fit
+      # properties:
+      #   color:
+      #     type: string
+      #     example: Black
+      #   typeee:
+      #     type: string
+      #     example: Jeans
+      #   price:
+      #     type: string
+      #     example: Expensive
+      #   size:
+      #     type: string
+      #     example: '30'
+      #   fit:
+      #     type: string
+      #     example: Regular fit
+
+paths:
+  /ping-sf:
+    get:
+      tags:
+        - Forms
+      parameters:
+        - name: ping
+          in: path
+          required: true
+          description: Message for ping SF
+          type: string
+      responses:
+        200:
+          description: Return SF REST response
+        404:
+          description: Example error
+  /send-email:
+    post:
+      tags:
+        - Forms
+      parameters:
+        - name: html
+          in: body
+          required: true
+          description: Email body content
+          type: string
+          schema:
+            $ref: '#/definitions/EmailBody'
+        - name: subject
+          in: body
+          required: true
+          description: Email subject
+          type: string
+          schema:
+            $ref: '#/definitions/EmailBody'
+      responses:
+        200:
+          description: Returns Email sending response
+        404:
+          description: Returns error
+  /forms/with-resume:
+    post:
+      tags:
+        - Forms
+      parameters:
+        - name: first_name
+          in: body
+          required: true
+          description: Employee First name
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: last_name
+          in: body
+          required: true
+          description: Employee Last name
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: email
+          in: body
+          required: true
+          description: Employee email
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: phone
+          in: body
+          required: true
+          description: Employee phone
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: additional_information
+          in: body
+          required: true
+          description: Employee additional_information
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: position
+          in: body
+          required: true
+          description: vacancy name if it's from vacancy page
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: city
+          in: body
+          required: true
+          description: "'Brest' (Brest, Minks, Gomel, Vitebsk, Grodno, Mogilev, Warsaw - if it's from vacancy page)"
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: school_name
+          in: body
+          required: true
+          description: Employee school name
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: speciality
+          in: body
+          required: true
+          description: Employee's speciality
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: graduation_year
+          in: body
+          required: true
+          description: Employee's graduationYear
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: english_level
+          in: body
+          required: true
+          description: "'A1' (A1, A2, B1, B2, C1, C2)"
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: file_name
+          in: body
+          required: true
+          description: MyResume.pdf
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: file
+          in: body
+          required: true
+          description: Contents of the file.
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+      responses:
+        200:
+          description: Return SF REST response
+        404:
+          description: Error
+  /forms/without-resume:
+    get:
+      tags:
+        - Forms
+      parameters:
+        - name: ping
+          in: path
+          required: true
+          description: Message for ping SF
+          type: string
+      responses:
+        200:
+          description: Return SF REST response
+        404:
+          description: Example error
+    post:
+      tags:
+        - Forms
+      parameters:
+        - name: first_name
+          in: body
+          required: true
+          description: Employee First name
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: last_name
+          in: body
+          required: true
+          description: Employee Last name
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: email
+          in: body
+          required: true
+          description: Employee email
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: phone
+          in: body
+          required: true
+          description: Employee phone
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: additional_information
+          in: body
+          required: true
+          description: Employee additional_information
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: position
+          in: body
+          required: true
+          description: vacancy name if it's from vacancy page
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: city
+          in: body
+          required: true
+          description: "'Brest' (Brest, Minks, Gomel, Vitebsk, Grodno, Mogilev, Warsaw - if it's from vacancy page)"
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: school_name
+          in: body
+          required: true
+          description: Employee school name
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: speciality
+          in: body
+          required: true
+          description: Employee's speciality
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: graduation_year
+          in: body
+          required: true
+          description: Employee's graduationYear
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+        - name: english_level
+          in: body
+          required: true
+          description: "'A1' (A1, A2, B1, B2, C1, C2)"
+          type: string
+          schema:
+            $ref: '#/definitions/FormBody'
+      responses:
+        200:
+          description: Return SF REST response
+        404:
+          description: Error
+  /product/jeans:
+    get:
+      tags:
+        - Jeans
+      parameters:
+        - name: ping
+          in: path
+          required: true
+          description: Jeans
+          type: string
+      responses:
+        200:
+          description: Return Vacancy REST response
+        404:
+          description: Example error
+    post:
+      tags:
+        - Vacancy
+      parameters:
+        - name: size
+          in: body
+          required: false
+          description: City
+          type: string
+          schema:
+            $ref: '#/definitions/JeansBody'
+      reaponses:
+        200:
+          description: Send Vacancy
+        404:
+          description: Example error  
+  /spec:
+    get:
+      tags:
+        - Specification
+      responses:
+        200:
+          description: Return the API specification

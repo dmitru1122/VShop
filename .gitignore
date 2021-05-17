@@ -1,0 +1,33 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+*/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+*.log
+log.txt
+npm-debug.log*
+
+/.idea
+/.ionic
+/.sass-cache
+/.sourcemaps
+/.versions
+/.vscode
+/node_modules
+*/node_modules
+.env
+*/.env
+*/fl-configs
+*/logs
+*/backups
+tmp
+backup-prod-build
+/build
+
+
