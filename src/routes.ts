@@ -8,6 +8,7 @@ const mainRoute = '/api/v1';
 
 export default function routes(app: Application): void {
   app.use(`${mainRoute}/ping-sf`, pingRouter);
+  app.use(`${mainRoute}/forms`, formsRouter);
   app.use(`${mainRoute}/send-email`, emailRouter);
   app.use(`${mainRoute}/product`, productRouter);
 }

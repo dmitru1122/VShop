@@ -2,8 +2,8 @@
   "ignore": ["test/**/*.ts", "test/**/*.spec.ts", ".git", "node_modules", "logs", "backups"],
   "watch": ["src", ".env"],
   "events": {
-    "restart": "kill -9 $(lsof -t -i:3000)",
-    "crash": "kill -9 $(lsof -t -i:3000)"
+    "restart": "kill -9 $(lsof -t -i:5000)",
+    "crash": "kill -9 $(lsof -t -i:5000)"
   },
   "delay": "3000",
   "exec": "npm run compile && node dist/index.js",

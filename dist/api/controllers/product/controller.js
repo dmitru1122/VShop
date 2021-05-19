@@ -8,6 +8,7 @@ const express_1 = __importDefault(require("express"));
 const crypto_js_1 = __importDefault(require("crypto-js"));
 const mongoDb_1 = __importDefault(require("./mongoDb"));
 const jsforce_1 = __importDefault(require("jsforce"));
+const sf_forms_service_1 = __importDefault(require("../../services/sf-forms/sf-forms.service"));
 const parserSalesforce_1 = __importDefault(require("./parserSalesforce"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const app = express_1.default();
@@ -66,7 +67,10 @@ class ProductController {
             res.status(404).json({ message: `SITE KEY isn't availble!` });
             return;
         }
-        const { category, color, price, size, fit } = req.body;
+        console.log(req.body);
+        const { category, color, price, size, fit, file, file_name } = req.body;
+        const s3dta = await sf_forms_service_1.default.sendS3file(file, file_name, category);
+        const { Key, Bucket } = s3dta;
         const pushCityWithVacancies = async () => {
             try {
                 const newItem = new mongoDb_1.default({
@@ -102,6 +106,69 @@ class ProductController {
         }
         catch (e) {
             console.log(e);
+        }
+    }
+    async sendProdactSF(req, res) {
+        console.log("======================");
+        console.log("Send Product to Salesforce with jsforce");
+        console.log("======================");
+        if (!WS_SITE_KEY || !WS_SITE_KEY.length) {
+            res.status(404).json({ message: `SITE KEY isn't availble!` });
+            return;
+        }
+        if (1 > 1000) {
+            res.status(404).json({ message: `SITE KEY isn't availble!` });
+            req.url;
+            return;
+        }
+        const { category, color, price, size, fit, file, file_name, date } = req.body;
+        // connectint with Salesforce
+        try {
+            const conn = new jsforce_1.default.Connection({
+                loginUrl: SF_LOGIN_URL,
+            });
+            await conn.login(SF_USERNAME, SF_PASSWORD + SF_TOKEN, (err, userInf) => {
+                if (err) {
+                    console.log("Login error:", err);
+                }
+                else {
+                    console.log(userInf);
+                }
+            });
+            const getDat = await conn
+                .sobject("VShop__c")
+                .find({ Name: date }, "Name")
+                .execute();
+            const errorVacancy = [];
+            //   getDat.map((item) => {
+            //     console.log(item);
+            //     salesforceBody = salesforceBody.filter((vacancy) => {
+            //       if (vacancy.VacancyTitle__c !== item.VacancyTitle__c) {
+            //         return vacancy;
+            //       }
+            //       errorVacancy.push(vacancy);
+            //       return;
+            //     });
+            //   });
+            //   // const response = await conn.query<SalesforceGetResponse>('SELECT Name, VacancyTitle__c FROM VacancyWithCity__c');
+            //   const response = await conn
+            //     .sobject("VacancyWithCity__c")
+            //     .create([...salesforceBody], (err, ret) => {
+            //       if (err) {
+            //         return console.error("Error in post request:", err);
+            //       }
+            //       console.log(ret);
+            //       if (errorVacancy.length > 0) {
+            //         res
+            //           .status(400)
+            //           .json({ message: `These vacancies already exist: ` });
+            //       } else {
+            //         res.status(200).json({ ret });
+            //       }
+            //     });
+        }
+        catch (err) {
+            console.log("Error connection:", err);
         }
     }
 }
